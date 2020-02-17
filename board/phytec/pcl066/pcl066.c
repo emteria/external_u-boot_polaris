@@ -1,5 +1,6 @@
 /*
  * Copyright 2018 Phytec
+ * Copyright 2020 emteria
  *
  * SPDX-License-Identifier:    GPL-2.0+
  */
@@ -19,10 +20,14 @@
 #include <asm/mach-imx/gpio.h>
 #include <asm/mach-imx/mxc_i2c.h>
 #include <asm/arch/clock.h>
+#include <asm/mach-imx/video.h>
+#include <asm/arch/video_common.h>
 #include <spl.h>
 #include <power/pmic.h>
 #include <power/pfuze100_pmic.h>
 #include <asm/mach-imx/boot_mode.h>
+#include <usb.h>
+#include <dwc3-uboot.h>
 #include "som.h"
 
 DECLARE_GLOBAL_DATA_PTR;
@@ -149,3 +154,66 @@ int board_late_init(void)
 	return 0;
 }
 
+int usb_gadget_handle_interrupts(void)
+{
+	dwc3_uboot_handle_interrupt(0);
+	return 0;
+}
+
+int mmc_map_to_kernel_blk(int devno)
+{
+	return devno;
+}
+
+#ifdef CONFIG_FSL_FASTBOOT
+#ifdef CONFIG_ANDROID_RECOVERY
+int is_recovery_key_pressing(void)
+{
+	return 0; /*TODO*/
+}
+#endif /*CONFIG_ANDROID_RECOVERY*/
+#endif /*CONFIG_FSL_FASTBOOT*/
+
+#if defined(CONFIG_VIDEO_IMXDCSS)
+struct display_info_t const displays[] = {{
+	.bus	= 0, /* Unused */
+	.addr	= 0, /* Unused */
+	.pixfmt	= GDF_32BIT_X888RGB,
+	.detect	= NULL,
+	.enable	= NULL,
+#ifndef CONFIG_VIDEO_IMXDCSS_1080P
+	.mode	= {
+		.name           = "HDMI", /* 720P60 */
+		.refresh        = 60,
+		.xres           = 1280,
+		.yres           = 720,
+		.pixclock       = 13468, /* 74250  kHz */
+		.left_margin    = 110,
+		.right_margin   = 220,
+		.upper_margin   = 5,
+		.lower_margin   = 20,
+		.hsync_len      = 40,
+		.vsync_len      = 5,
+		.sync           = FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+		.vmode          = FB_VMODE_NONINTERLACED
+	}
+#else
+	.mode	= {
+		.name           = "HDMI", /* 1080P60 */
+		.refresh        = 60,
+		.xres           = 1920,
+		.yres           = 1080,
+		.pixclock       = 6734, /* 148500 kHz */
+		.left_margin    = 148,
+		.right_margin   = 88,
+		.upper_margin   = 36,
+		.lower_margin   = 4,
+		.hsync_len      = 44,
+		.vsync_len      = 5,
+		.sync           = FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
+		.vmode          = FB_VMODE_NONINTERLACED
+	}
+#endif
+} };
+size_t display_count = ARRAY_SIZE(displays);
+#endif /* CONFIG_VIDEO_IMXDCSS */

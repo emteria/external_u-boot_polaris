@@ -194,7 +194,7 @@
 	   "else booti ${loadaddr} - ${fdt_addr}; fi"
 
 /* Link Definitions */
-#define CONFIG_LOADADDR			0x40480000
+#define CONFIG_LOADADDR			0x42000000
 
 #define CONFIG_SYS_LOAD_ADDR           CONFIG_LOADADDR
 
@@ -254,4 +254,28 @@
 
 #define CONFIG_OF_SYSTEM_SETUP
 
+#endif
+
+#define CONFIG_SERIAL_TAG
+#define CONFIG_FASTBOOT_USB_DEV 0
+
+#define CONFIG_USB_MAX_CONTROLLER_COUNT 2
+
+#define CONFIG_USBD_HS
+#define CONFIG_USB_GADGET_VBUS_DRAW 2
+
+/* Framebuffer */
+#ifdef CONFIG_VIDEO
+#define CONFIG_VIDEO_IMXDCSS
+#define CONFIG_VIDEO_BMP_RLE8
+#define CONFIG_SPLASH_SCREEN
+#define CONFIG_SPLASH_SCREEN_ALIGN
+#define CONFIG_BMP_16BPP
+#define CONFIG_VIDEO_LOGO
+#define CONFIG_VIDEO_BMP_LOGO
+#define CONFIG_IMX_VIDEO_SKIP
+#endif
+
+#if defined(CONFIG_ANDROID_SUPPORT)
+#include "pcl066_android.h"
 #endif

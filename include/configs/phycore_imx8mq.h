@@ -240,6 +240,11 @@
 #define CONFIG_SUPPORT_EMMC_BOOT	/* eMMC specific */
 #define CONFIG_SYS_MMC_IMG_LOAD_PART	1
 
+#ifdef CONFIG_FSL_QSPI
+#define FSL_QSPI_FLASH_SIZE		(SZ_32M)
+#define FSL_QSPI_FLASH_NUM		1
+#endif
+
 #define CONFIG_MXC_GPIO
 
 #define CONFIG_MXC_OCOTP
@@ -248,6 +253,42 @@
 /* I2C Configs */
 #define CONFIG_SYS_I2C_SPEED		  100000
 
+/* USB configs */
+#ifndef CONFIG_SPL_BUILD
+#define CONFIG_USB_STORAGE
+
+#define CONFIG_CMD_USB_MASS_STORAGE
+#define CONFIG_USB_GADGET_MASS_STORAGE
+#define CONFIG_USB_FUNCTION_MASS_STORAGE
+
+#define CONFIG_CMD_READ
+
+#endif
+
+#define CONFIG_SERIAL_TAG
+#define CONFIG_FASTBOOT_USB_DEV 0
+
+
+#define CONFIG_USB_MAX_CONTROLLER_COUNT         2
+
+#define CONFIG_USBD_HS
+#define CONFIG_USB_GADGET_VBUS_DRAW 2
+
 #define CONFIG_OF_SYSTEM_SETUP
 
+/* Framebuffer */
+#ifdef CONFIG_VIDEO
+#define CONFIG_VIDEO_IMXDCSS
+#define CONFIG_VIDEO_BMP_RLE8
+#define CONFIG_SPLASH_SCREEN
+#define CONFIG_SPLASH_SCREEN_ALIGN
+#define CONFIG_BMP_16BPP
+#define CONFIG_VIDEO_LOGO
+#define CONFIG_VIDEO_BMP_LOGO
+#define CONFIG_IMX_VIDEO_SKIP
+#endif
+
+#if defined(CONFIG_ANDROID_SUPPORT)
+#include "phycore_imx8mq_android.h"
+#endif
 #endif

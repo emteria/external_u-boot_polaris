@@ -645,7 +645,7 @@ static void flashing(char *cmd, char *response)
 		 */
 		strcpy(response, "OKAY");
 #else
-		status = do_fastboot_unlock(false);
+		status = do_fastboot_unlock(true);
 		if (status != FASTBOOT_LOCK_ERROR)
 			strcpy(response, "OKAY");
 		else

@@ -212,7 +212,11 @@
 
 #define CONFIG_SYS_SDRAM_BASE           0x40000000
 #define PHYS_SDRAM                      0x40000000
-#define PHYS_SDRAM_SIZE			0x40000000 /* 1GB DDR */
+#define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
+
+#define CONFIG_SYS_MEMTEST_START	PHYS_SDRAM
+#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + \
+					(PHYS_SDRAM_SIZE >> 1))
 
 #define CONFIG_BAUDRATE			115200
 
@@ -255,6 +259,7 @@
 
 /* USB configs */
 #ifndef CONFIG_SPL_BUILD
+#define CONFIG_CMD_USB
 #define CONFIG_USB_STORAGE
 
 #define CONFIG_CMD_USB_MASS_STORAGE
@@ -275,6 +280,10 @@
 #define CONFIG_USB_GADGET_VBUS_DRAW 2
 
 #define CONFIG_OF_SYSTEM_SETUP
+
+#ifndef CONFIG_SPL_BUILD
+#define CONFIG_DM_PMIC
+#endif
 
 /* Framebuffer */
 #ifdef CONFIG_VIDEO

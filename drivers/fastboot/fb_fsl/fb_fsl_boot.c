@@ -242,6 +242,8 @@ static void fastboot_setup_system_boot_args(const char *slot, bool append_root)
 	struct fastboot_ptentry *ptentry = fastboot_flash_find_ptn(system_part_name);
 	if(ptentry != NULL) {
 		char bootargs_3rd[ANDR_BOOT_ARGS_SIZE] = {'\0'};
+		// this is not used in kernel v4.19 anymore, but is still required for kernel v4.14
+		sprintf(bootargs_3rd, "skip_initramfs ");
 		if (append_root) {
 			u32 dev_no = mmc_map_to_kernel_blk(mmc_get_env_dev());
 			sprintf(bootargs_3rd, "root=/dev/mmcblk%dp%d ",
@@ -677,7 +679,12 @@ int do_boota(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]) {
 #ifdef CONFIG_ANDROID_AUTO_SUPPORT
 		strcat(bootargs_sec, avb_out_data->cmdline);
 #else
+		/*
 		strcat(bootargs_sec, strstr(avb_out_data->cmdline, "androidboot"));
+		*/
+		// the code above may be useful for kernel v4.19, which doesn't rely on the device mapper
+		// however, kernel v4.14 still needs the full cmdline, so let's keep it for now
+		strcat(bootargs_sec, avb_out_data->cmdline);
 #endif
 		env_set("bootargs_sec", bootargs_sec);
 #ifdef CONFIG_SYSTEM_RAMDISK_SUPPORT
@@ -832,7 +839,7 @@ int do_boota(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[]) {
 
 /* when CONFIG_SYSTEM_RAMDISK_SUPPORT is enabled and it's for Android Auto, if it's not recovery mode
  * do not pass ramdisk addr*/
-#if defined(CONFIG_SYSTEM_RAMDISK_SUPPORT) && defined(CONFIG_ANDROID_AUTO_SUPPORT)
+#if defined(CONFIG_SYSTEM_RAMDISK_SUPPORT) || defined(CONFIG_ANDROID_AUTO_SUPPORT)
 	if (!is_recovery_mode)
 		boot_args[2] = NULL;
 #endif

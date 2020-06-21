@@ -35,6 +35,7 @@
 #undef CONFIG_BOOTCOMMAND
 
 #define CONFIG_EXTRA_ENV_SETTINGS		\
+	"bootargs_ram_capacity=cma=800M androidboot.primary_display=imx-drm androidboot.displaymode=720p androidboot.fbTileSupport=disable\0" \
 	"splashpos=m,m\0"			\
 	"fdt_high=0xffffffffffffffff\0"		\
 	"initrd_high=0xffffffffffffffff\0"	\
